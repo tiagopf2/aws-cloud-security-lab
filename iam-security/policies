@@ -1,0 +1,71 @@
+# IAM & S3 Security Policies (JSON)
+
+This directory contains the raw JSON policy documents used throughout the project to enforce the **Principle of Least Privilege (PLP)** and resource hardening.
+
+---
+
+## 1. IAM Identity-Based Policies
+
+### `deny-ec2-access.json`
+**Purpose:** Explicitly denies a specific user or group from performing any actions on EC2 resources. This was used to demonstrate that an explicit `Deny` overrides any other `Allow` permissions.
+**Applied to:** User `aimaroroz`
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Deny",
+            "Action": "ec2:*",
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+---
+
+## 2. S3 Resource-Based Policies
+
+### `s3-bucket-deny-user.json`
+**Purpose:** A bucket-level policy that denies all S3 actions to a specific IAM principal. This ensures that even if the user has broad IAM permissions, they are blocked from this specific "Sensitive Data" bucket.
+**Applied to:** User `amarrow`
+
+```json
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1751088105518",
+    "Statement": [
+        {
+            "Sid": "Stmt1751088055788",
+            "Effect": "Deny",
+            "Principal": {
+                "AWS": "arn:aws:iam:043309532723:user/amarrow"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::tiagooctober15/*"
+        }
+    ]
+}
+```
+
+---
+
+## 3. Network Access Control (NACL) - Logical Rule Reference
+*While NACLs are not JSON files, the configuration logic used for the public subnet is documented here:*
+
+| Rule # | Type | Protocol | Port Range | Source | Allow/Deny |
+|---|---|---|---|---|---|
+| 100 | SSH | TCP | 22 | [Admin-IP]/32 | ALLOW |
+| 200 | HTTP | TCP | 80 | 0.0.0.0/0 | ALLOW |
+| 300 | ICMP | ALL | ALL | 0.0.0.0/0 | ALLOW |
+| * | ALL Traffic | ALL | ALL | 0.0.0.0/0 | **DENY** |
+
+---
+
+## Screenshots of Policy Implementation
+The following proof of work is stored in the `screenshots/` directory:
+
+- `deny-ec2-policy-verify.png`: Shows the `ec2access` policy attached to the user in the IAM console.
+- `s3-bucket-policy-json.png`: Screenshot of the S3 Policy editor showing the implemented JSON.
+- `unauthorized-error-console.png`: The error message displayed when a blocked user attempts to access restricted resources.
