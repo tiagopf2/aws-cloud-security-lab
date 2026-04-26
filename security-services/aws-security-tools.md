@@ -84,4 +84,4 @@ Trusted Advisor provided a high-level security "health check" for the entire acc
 
 ---
 
-➡️ Next: [Final Security Analysis](../analysis/strategy.md)
+➡️ Next: [Final Security Analysis](../analysis/security-analysis.md)
