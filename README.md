@@ -85,4 +85,4 @@ The focus is on enforcing the Principle of Least Privilege (PLP), securing infra
 ## Full Report
 For full documentation:
 
-📄 [View Full Report](original-report/AWS_Project.pdf)
+📄 [View Full Report](AWS_Project.pdf)
